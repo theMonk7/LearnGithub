@@ -1,0 +1,23 @@
+name: Reusable Workflow
+
+on:
+  workflow_call:
+    inputs:
+      example-input:
+        required: false
+        type: string
+    secrets:
+      EXAMPLE_SECRET:
+        required: false
+
+jobs:
+  example_job:
+    name: Reusable Job 1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print input
+        run: | 
+            echo "Input: ${{ inputs.example-input }}"
+      - name: Print secret
+        run: |
+            echo "Secret: ${{ secrets.EXAMPLE_SECRET }}"
