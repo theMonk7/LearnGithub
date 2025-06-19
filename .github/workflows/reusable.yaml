@@ -1,23 +1,42 @@
-name: Reusable Workflow
-
-on:
+name: GitHub Actions Demo
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: 
   workflow_call:
     inputs:
-      example-input:
-        required: false
+      logLevel:
         type: string
-    secrets:
-      EXAMPLE_SECRET:
-        required: false
-
+        required: true
+        default: 'warning'
+      print_tags:
+        description: 'True to print to STDOUT'
+        required: true
+        type: boolean
+      tags:
+        description: 'Test scenario tags'
+        required: true
+        type: number
+        default: 0
+    outputs:
+      firstword:
+        description: "The first output string"
+        value: ${{ jobs.Explore-GitHub-Actions.outputs.output1 }}
 jobs:
-  example_job:
-    name: Reusable Job 1
+  Explore-GitHub-Actions:
+    outputs:
+      output1: ${{ steps.step1.outputs.firstword }}
     runs-on: ubuntu-latest
     steps:
-      - name: Print input
-        run: | 
-            echo "Input: ${{ inputs.example-input }}"
-      - name: Print secret
+      - id: Step1
+        run: echo "🎉 The job was automatically triggered by a ${{ inputs.logLevel }} event."
+      - run: echo "🐧 This job is now running on a ${{ inputs.print_tags }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: List files in the repository
         run: |
-            echo "Secret: ${{ secrets.EXAMPLE_SECRET }}"
+          ls ${{ github.workspace }}
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - run: echo "firstword=hello" >> $GITHUB_OUTPUT
+  
