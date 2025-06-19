@@ -49,7 +49,7 @@ jobs:
     uses: ./.github/workflows/reusable.yml
     with:
       logLevel: ${{ github.event.inputs.logLevel }}
-      print_tags: WTF is this label?
+      print_tags: "WTF is this label?"
       tags: ${{ github.event.inputs.tags }}
   Printing-Output:
     needs: Reusable-Workflow
