@@ -10,7 +10,7 @@ on:
       print_tags:
         description: 'True to print to STDOUT'
         required: true
-        type: boolean
+        type: string
       tags:
         description: 'Test scenario tags'
         required: true
