@@ -35,7 +35,7 @@ permissions:
 jobs:
   call-reusable-demo:
     name: Call Reusable Workflow
-    uses: ./.github/workflows/github-actions-demo.yml   # 👈 path to reusable WF
+    uses: ./.github/workflows/reusable.yml   # 👈 path to reusable WF
     with:
       logLevel: ${{ github.event.inputs.logLevel || 'warning' }}
       print_tags: ${{ github.event.inputs.print_tags || 'true' }}
