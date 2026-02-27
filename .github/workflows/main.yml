@@ -33,53 +33,11 @@ permissions:
   pull-requests: read
 
 jobs:
-  Detect-PR:
-    runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-      - name: Print Event Info
-        run: |
-          echo "Event Name: ${{ github.event_name }}"
-          echo "Ref Name  : ${{ github.ref_name }}"
-          echo "Head Ref  : ${{ github.head_ref }}"
-          echo "Base Ref  : ${{ github.base_ref }}"
-
-      - name: Detect Pull Request Context
-        run: |
-          BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
-          echo "Branch being checked: $BRANCH_NAME"
-
-          # Case 1: Triggered by pull_request event
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            echo "PR event detected."
-            PR_NUMBER="${{ github.event.pull_request.number }}"
-            PR_BASE="${{ github.base_ref }}"
-          else
-            echo "Not a PR event. Checking via GitHub API..."
-
-            PR_NUMBER=$(gh pr list \
-              --repo "${{ github.repository }}" \
-              --head "$BRANCH_NAME" \
-              --state open \
-              --json number \
-              -q '.[0].number')
-
-            if [[ -n "$PR_NUMBER" ]]; then
-              PR_BASE=$(gh pr view "$PR_NUMBER" \
-                --repo "${{ github.repository }}" \
-                --json baseRefName \
-                -q '.baseRefName')
-            fi
-          fi
-
-          echo "--------------------------------------"
-          if [[ -n "$PR_NUMBER" ]]; then
-            echo "✅ Open PR Found!"
-            echo "PR Number : $PR_NUMBER"
-            echo "Base Branch: $PR_BASE"
-          else
-            echo "❌ No Open PR Found for this branch."
-          fi
-          echo "--------------------------------------"
+  call-reusable-demo:
+    name: Call Reusable Workflow
+    uses: ./.github/workflows/github-actions-demo.yml   # 👈 path to reusable WF
+    with:
+      logLevel: ${{ github.event.inputs.logLevel || 'warning' }}
+      print_tags: ${{ github.event.inputs.print_tags || 'true' }}
+      tags: ${{ github.event.inputs.tags || 0 }}
+    secrets: inherit
